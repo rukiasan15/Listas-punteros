@@ -1,0 +1,190 @@
+#include<stdio.h>
+#include<conio.h>
+#include<iostream.h>
+#include<malloc.h>
+#define localizar (struct cola *)malloc(sizeof(struct cola))
+
+
+struct vertice{
+int clave;
+struct vertice *pt;
+struct linea *primera;
+            };
+struct linea{
+struct vertice *destino;
+struct linea *pt;
+              };
+
+struct cola {
+int visita;
+struct cola *pou;
+}*H=NULL, *F=NULL, *X=NULL;
+
+typedef struct vertice *nodo; typedef struct linea *arista;	nodo P;
+
+//INSERTAR DATOS
+void insertar()
+{ nodo T, nuevo = new vertice;
+gotoxy(1,16); printf("vertice: "); cin>>nuevo->clave;
+nuevo->pt=NULL; nuevo->primera=NULL;
+
+if(P==NULL)
+{ P=nuevo; }
+else
+{ T=P;
+	while(T->pt!=NULL)
+   {  T=T->pt; } T->pt=nuevo;
+   }
+   gotoxy(1,17); printf("vertice ingresado");
+}
+
+//INSERTAR ARISTAS
+void aristas()
+{ int ini, fin; arista nuevo= new linea; nodo aux, cab;   arista G;
+gotoxy(1,16); printf("1 vertice: ");  gotoxy(12,16); cin>>ini;
+gotoxy(1,17); printf("2 vertice: "); gotoxy(12,17); cin>>fin;
+   if(P==NULL) {return;}
+   nuevo->pt=NULL; aux=cab=P;
+  while(cab!=NULL)
+  { if(cab->clave==fin) {break; }
+    cab=cab->pt; }
+
+    while(aux!=NULL)
+    { if(aux->clave==ini){ break;}
+     aux=aux->pt; }
+
+   if(aux->primera==NULL)
+   { aux->primera=nuevo;
+   	nuevo->destino=cab;
+      }
+      else
+      { G=aux->primera;
+      	while(G->pt!=NULL)
+         { G=G->pt; }
+         nuevo->destino=cab;
+         G->pt=nuevo; }
+   gotoxy(1,19); printf("arista agregada");
+   }
+
+//MOSTRAR ARISTAS
+void mostrar()
+{ nodo aux; arista ar; int var; aux=P;
+gotoxy(1,16); printf("escoga el vertice"); cin>>var;
+	while(aux!=NULL)
+   {
+    if(aux->clave==var)
+     {	if(aux->primera==NULL) {return;; }
+      else
+      { ar=aux->primera;
+      	while(ar!=NULL)
+         { cout<<"\n->"<<ar->destino->clave;
+         ar=ar->pt; }   return;
+       }        }
+         if(aux->clave!=var) {aux=aux->pt; }
+         }
+         }
+
+//MOSTRAR GRAFO
+void grafo()
+{  nodo ifg; arista cam; ifg=P; F=NULL;
+	while(ifg!=NULL)
+   {
+	H=X; while(H!=NULL)
+	{ if(H->visita==ifg->clave) {break; } H=H->pou; }
+	if(H==NULL)
+	{ H=localizar;
+	H->visita=ifg->clave;
+	H->pou=NULL;
+	if(F==NULL) { X=H; F=H;}
+	else {F->pou=H; F=H;}
+   	}
+
+
+    if(ifg->primera!=NULL)
+    {	cam=ifg->primera;
+    		while(cam!=NULL)
+         {
+	H=X; while(H!=NULL)
+	{ if(H->visita==cam->destino->clave) {break; } H=H->pou; }
+	if(H==NULL)
+	{ H=localizar;
+	 H->visita=cam->destino->clave;
+	H->pou=NULL;
+	F->pou=H; F=H;	 }
+
+          cam=cam->pt; }
+         	}
+           ifg=ifg->pt;
+         }
+         cout<<"\n";
+H=X; while(H!=NULL)
+	{ cout<<"\t"<<H->visita; H=H->pou; }
+
+
+}
+
+//ELIMINAR NODO
+void eliminar()
+{ int var; nodo aux=P, alt;  arista G, R;
+cin>>var;
+	while(aux!=NULL)
+  { if(aux->clave==var)
+  		{ if(aux->primera!=NULL)
+      	{  G=aux->primera;
+         		while(G->pt!=NULL)
+               	{ R=G; G=G->pt; delete(R); }
+                   }
+         if(aux==P)
+         { P=P->pt; delete(aux); return; }
+         if(aux!=P)
+         {  alt->pt=aux->pt; delete(aux); return; }
+                   }
+         alt=aux; aux=aux->pt;
+         }
+
+         }
+
+//ELIMINAR ARISTA
+void borrar()
+{ int ini, fin; nodo aux, cab; arista G, R;
+aux=cab=P;
+cin>>ini; cin>>fin;
+	while(cab!=NULL)
+   { if(cab->clave==fin) {break; }
+   	cab=cab->pt; }     //fin del while
+
+      while(aux!=NULL)     //inicio del while 2
+   { if(aux->clave==ini)  //inicio del 1 if
+   	{ G=aux->primera;
+
+      	while(G!=NULL)     //inicio del 3 while
+         { if(G->destino==cab)     //inicio del 2 if
+         	{ if(G==aux->primera)
+            	{ aux->primera=aux->primera->pt; }
+               else
+               { R->pt=G->pt; delete(G);  }
+
+         }     //fin del 2 if
+       R=G; G=G->pt;     }        //fin del 3 while
+           }    //fin del 1 if
+   aux=aux->pt;      }     //fin del while  2
+  }
+
+void main()
+{ int op; P=NULL; do{ clrscr();
+gotoxy(15,3); printf("MENU"); gotoxy(10,5); printf("1.agregar vertices"); gotoxy(10,6); printf("2.agregar aristas");
+gotoxy(10,7); printf("3.mostrar el grafo"); gotoxy(10,8); printf("4.mostrar arista");
+gotoxy(10,9); printf("5.eliminar vertice"); gotoxy(10,10); printf("6.eliminar arista");
+gotoxy(10,11); printf("7.salir"); gotoxy(15,13); printf("OPCION: ");
+gotoxy(23,13); cin>>op;
+switch(op)
+{ case 1: gotoxy(1,15); printf("AGREGAR VERTICE");insertar(); break;
+	case 2: gotoxy(1,15); printf("AGREGAR ARISTA"); aristas(); break;
+	case 3: gotoxy(1,15); printf("MOSTRAR EL GRAFO");grafo(); getch(); break;
+   case 4: gotoxy(1,15); printf("MOSTRAR ARISTA");  mostrar(); break;
+   case 5: gotoxy(1,15); printf("ELIMINAR VERTICE"); eliminar(); break;
+   case 6: gotoxy(1,15); printf("ELIMINAR ARISTA"); borrar(); break;
+}
+}while(op!=7);
+
+getch(); }

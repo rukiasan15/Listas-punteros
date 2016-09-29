@@ -1,0 +1,173 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <alloc.h>
+#include <iostream.h>
+#define localizar (struct cola *)malloc(sizeof(struct cola))/*Definimos la variable localizar para abrir espacio en memoria*/
+
+struct cola
+{
+char nombre[100],cedula[100];
+int deuda,edad,dias_mora;/*Variables donde recogemos los datos*/
+struct cola *sig;/*Puntero al elemento anterior*/
+}*aux=NULL,*cab=NULL,*fin=NULL;/*Punteros para movernos por la pila*/
+
+/*Prototipo de las funciones*/
+void agregar(void);
+void extraer(void);
+void visualizar(void);
+void autor(void);
+
+void main( )
+{
+char opc;
+do
+{
+textbackground(BLUE);/*Función que selecciona el color de fondo*/
+clrscr( );/*Funciòn que limpia la pantalla*/
+textcolor(7);
+cprintf("\n******************** BANCO XXX ****************************");
+cout<<"\n""\n""------------------ MENU PRINCIPAL -------------------------";
+cout<<"\n""1.- Insertar Datos del deudor";
+cout<<"\n""2.- Extraiga Datos del deudor";
+cout<<"\n""3.- Visualizar la lista de Deudores";
+cout<<"\n""4.- Sobre el autor del programa";
+cout<<"\n""5.- Salir";
+cout<<"\n""----------------------------------------------------------";
+cout<<"\n""\n""Digite su opcion: ";
+cin>>opc;
+
+switch(opc)
+{
+case '1':
+agregar( );
+break;
+
+case '2':
+extraer( );
+break;
+
+case '3':
+visualizar( );
+break;
+
+case '4':
+autor( );
+break;
+}
+
+}
+while (opc!='5');
+}
+
+void agregar(void)/*Funcion que apila los datos*/
+{
+aux=localizar;
+textbackground(GREEN);
+clrscr( );
+textcolor(7);
+cprintf("\n******************** BANCO XXX ****************************");
+cout<<"\n""\n""---------------- DATOS DEL DEUDOR --------------------";
+cout<<"\n""\n""Digite el nombre del deudor: ";
+cin>>aux->nombre;
+cout<<"\n""Digite la edad del deudor: ";
+cin>>aux->edad;
+cout<<"\n""Digite el numero de cedula: ";
+cin>>aux->cedula;
+cout<<"\n""Digite la cantidad de la deuda: $";
+cin>>aux->deuda;
+cout<<"\n""Digite los dias de mora del deudor: ";
+cin>>aux->dias_mora;
+aux->sig=NULL;
+if (fin==NULL)
+fin=cab=aux;
+else
+{
+fin->sig=aux;
+fin=aux;
+}
+}
+
+void extraer(void)/*Funcion que desapila los datos*/
+{
+int b;
+if (cab==NULL)
+{
+cout<<"\n""\n""+++++++++++++++++++++++++++++++++++++++++++";
+cout<<"\n""La pila esta vacia.";
+cout<<"\n""+++++++++++++++++++++++++++++++++++++++++++";
+getch();
+}
+else
+{
+
+cout<<"\n""\n""+++++++++++++++++++++++++++++++++++++++++++";
+cout<<"\n""Los datos del deudor "<<aux->nombre<<" seran extraidos.";
+cout<<"\n""+++++++++++++++++++++++++++++++++++++++++++";
+cout<<"\n""\n""Si desea extraerlos oprima 1.";
+cout<<"\n""Si no desea extraerlos oprima 0.";
+cout<<"\n""\n""Digite su opcion: ";
+cin>>b;
+if (b==1)
+{
+aux=cab;
+cab=cab->sig;
+free(aux);
+cout<<"\n""Los datos fueron extraidos. Oprima ENTER para continuar";
+getch( );
+}
+else if (b==0)
+{
+cout<<"\n""No lo desea. Oprima ENTER para continuar";
+getch( );
+}
+else if (b>=2)
+{
+cout<<"\n""Esta opcion no es valida. Oprima ENTER para continuar";
+getch( );
+}
+}
+}
+
+void visualizar(void)/*Funcion que visualiza los datos*/
+{
+textbackground(RED);
+clrscr( );
+if (cab==NULL) return;
+int i=0,suma_total=0;
+aux=cab;
+textcolor(7);
+cprintf("\n******************** BANCO XXX ****************************");
+cout<<"\n""\n""---------------- LISTA DE DEUDORES -----------------------";
+cout<<"\n""\n""Nombre Edad Cedula Cantidad";
+while (aux!=NULL)
+{
+gotoxy(1,8+i);cout<<aux->nombre;
+gotoxy(15,8+i);cout<<aux->edad;
+gotoxy(30,8+i);cout<<aux->cedula;
+gotoxy(45,8+i);cout<<"$"<<aux->deuda;
+suma_total=suma_total+aux->deuda;
+aux=aux->sig;
+i++;
+}
+cout<<"\n""\n""\n""---------------------------------------------------------";
+cout<<"\n""La suma total de los deudores es: $"<<suma_total;
+cout<<"\n""---------------------------------------------------------";
+getch( );
+}
+
+void autor(void)/*Funcion que visualiza los datos del programador*/
+{
+textbackground(BROWN);
+clrscr( );
+textcolor(7);
+cprintf("\n******************** BANCO XXX ****************************");
+cout<<"\n""\n""----------------- SOBRE EL AUTOR -----------------------";
+cout<<"\n""\n""Project R4";
+cout<<"\n""Universidad Nacional Abierta y a Distancia (UNAD)";
+cout<<"\n""Ingenieria de Sistemas";
+cout<<"\n""Semestre 4";
+cout<<"\n""Girardot - Colombia";
+cout<<"\n""2006";
+getch( );
+}

@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <alloc.h>
+#include <iostream.h>
+#define localizar (struct pila *)malloc(sizeof(struct pila))  //IMPORTANTE, busca espacios disponibles
+
+struct pila{
+int num;
+struct pila *pt; //es el nodo o como yo le digo enlace
+} *ini=NULL, *fin=NULL, *aux=NULL, *cab=NULL; //*ini va a tener el valor del espacio y *fin va a copiarlo para que en la siguiene *ini pueda tener el siguiente valor
+
+void insertar(void);
+void eliminar(void);
+void mostrar(void);
+void main()
+{ int op;
+ do{ clrscr();
+printf("que desea hacer: ");
+printf("\n1.INSERTAR\n2.ELIMINAR\n3.MOSTRAR\n"); cin>>op;
+
+switch(op)
+{ case 1: insertar();  break;
+  case 2: eliminar(); break;
+	case 3: mostrar(); break;
+
+}
+    } while(op!=4);
+ getch();
+}
+
+void insertar()
+{  ini=localizar;   //busca un espacio vacio
+
+clrscr(); printf("espacio:%d\n",ini);
+ printf("numero: ");  cin>>ini->num;
+ printf("\nnumero=%d\n",ini->pt);   //imprime sus direcciones
+ ini->pt=NULL;
+ if(fin==NULL)
+ {ini->pt=NULL;  fin=ini; //fin es igual al espacio buscado
+  printf("\nini->pt=%d	fin=%d",ini->pt,fin);   //inicia el puntero de la estructura en 0
+}
+ else
+{
+ini->pt=fin;  printf("\nini->pt=%d\n",ini->pt);  //le asigna pt la ultima direccion conocida
+fin=ini;
+
+}
+getch();
+}
+
+void eliminar()
+{ clrscr(); int var, cont=0, es=0; cin>>var;
+   if (fin==NULL) {return;}
+ini=fin;  cab=fin; aux=fin; //printf("%d		%d\n",ini,cab); printf("%d		%d\n\n",ini->num,cab->num);
+if(ini->num==var) {fin=fin->pt; free(ini); }
+else {
+while(ini!=NULL)
+{ if(ini->num==var && cont>0)
+	{   while(cab->pt > ini->pt)
+   	{ cab=cab->pt;  // (4,3,2,1) cab estaba en 4 y ahora esta en 3, cab=cab->pt. cab = 4->pt quiere decir que si la direccion de cab es 4 entonces 4 apunta a pt y esta 			conectado a la direccion 3
+      if(cab->pt == ini->pt )
+ { cab=cab->pt; //si la direccion de cab es igual a la direccion del valor ingresado entonces cab avanzara una direccion mas
+if(cab==NULL) 
+{ aux->pt=NULL;  break; } //si cuando avanza cab encuentra una direccion NULL no puede conectarla a aux ya que la direccion escogida es la base de la pila y se va se jode el 			programa, hay que declarar la dirrecion anterior como la nueva base diciendo que la direccion que esta apuntando a aux deje de conectarse con la 			base diciendole NULL y perdiendose y declarando ahora que aux lleva el valor base
+      aux->pt=cab;  }
+           aux=aux->pt; //aux llevara una direccion anterior a la direccion del valor a eliminar
+           }
+
+                                 }
+
+
+ printf("\n%d		%d\n",ini,ini->num);
+ ini=ini->pt;
+
+cont++;
+
+}                       }
+
+
+getch();
+}
+
+void mostrar()
+{ clrscr();
+   if(fin==NULL){ return; }
+   int n=0;
+   ini=fin; //printf("%d\n\n",ini);
+ while(ini!=NULL)
+ {
+   printf("%d",ini->num);  printf("	ini->pt=%d",ini);
+  n++;
+  ini=ini->pt;    printf("	%d\n",ini);
+
+     }
+
+ getch();
+
+
+}

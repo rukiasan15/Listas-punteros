@@ -1,0 +1,114 @@
+#include<stdio.h>
+#include<conio.h>
+#include<iostream.h>
+#include<malloc.h>
+
+typedef struct tarbol
+{
+  int clave;
+  struct tarbol *izq,*der;
+} tarbol;
+//tarbol *a=NULL;
+
+
+tarbol *agregar(tarbol *a, int elem)
+{
+ if (a == NULL) {
+    a = (tarbol *) malloc(sizeof(tarbol));
+    a->clave = elem;
+    a->izq = a->der = NULL;  // insertar(a->izq,6);
+    return(a);
+  }
+  if (a->clave < elem) {a->der=agregar(a->der, elem); }
+  if (a->clave > elem){ a->izq=agregar(a->izq, elem);}   return(a);
+
+
+}
+
+
+int buscar(tarbol *a,int e){
+
+if(a!=NULL)
+if(a->clave==e)
+return(1);
+else{
+if(e < a->clave)
+return(buscar(a->izq,e));
+else
+return(buscar(a->der,e));
+}
+else
+return(0);
+}
+
+tarbol *unir(tarbol *izquierdo, tarbol *derecho){
+tarbol *centro;
+if (izquierdo==NULL)
+return derecho;
+if (derecho==NULL)
+return izquierdo;
+centro= unir(izquierdo->der, derecho->izq);
+izquierdo->der= centro;
+derecho->izq= izquierdo;
+return derecho;
+}
+
+tarbol *eliminar(tarbol *a,int e){
+
+if (a->clave==e)
+return unir(a->izq,a->der);
+if (e < a->clave)
+a->izq=eliminar(a->izq,e);
+else 
+a->der=eliminar(a->der,e);
+return a;
+}
+
+
+void preorden(tarbol *a)
+{
+  if (a != NULL) {
+  printf("%d\t",a->clave);
+    preorden(a->izq);
+    preorden(a->der);
+  }
+}
+
+
+void main()
+{ int dat, op, j=0, g, vec;
+ tarbol *a=NULL;
+
+  if(j==0) { for(g=0; g<3; g++) { if(g==0) {dat=9; a=agregar(a,dat); } if(g==1) { dat=6; a=agregar(a,dat); }
+      if(g==2) {dat=12; a=agregar(a,dat); }  }   }
+                                                     j=1;
+do { clrscr(); gotoxy(15,5); cout<<"MENU"; gotoxy(10,6); cout<<"1.ingresar";
+gotoxy(10,7); cout<<"2.mostrar arbol"; gotoxy(10,8); cout<<"3.buscar";
+gotoxy(10,9); cout<<"4.eliminar"; gotoxy(10,10); cout<<"5.SALIR";   gotoxy(15,12); cout<<"opcion: ";
+
+cin>>op;
+switch(op)
+{ case 1: gotoxy(1,14);	cout<<"ingrese el numero: "; cin>>dat;
+			if(buscar(a,dat)==1) { gotoxy(1,15); printf("el valor existe"); }
+         else {  a=agregar(a,dat);	 } getch();		break;
+
+case 2:  gotoxy(1,14);if(a==NULL) {printf("arbol vacio"); } else {printf("ARBOL\n"); preorden(a);  }getch(); break;
+
+case 3:  gotoxy(1,14); if(a==NULL) {printf("arbol vacio"); } else {printf("ingrese numero a buscar: ");
+			cin>>dat;  if(buscar(a,dat)==1) {gotoxy(1,15); printf("existe"); }
+         else { gotoxy(1,15); printf("no existes"); }               }     getch();
+          break;
+
+case 4: gotoxy(1,14); if(a==NULL) {printf("arbol vacio"); }
+		else {printf("ingrese numero a eliminar: " ); cin>>dat; a=eliminar(a,dat);
+      	gotoxy(1,15); cout<<"numero eliminado";}
+      	getch();  break;
+}
+}while(op!=5);
+
+  getch();
+}
+
+
+
+
